@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { Save, CheckCircle, Globe, Clock, FileText, BarChart3, Mail, MessageSquare, Link, MapPin, Calendar } from 'lucide-react';
+import { Save, CheckCircle, Globe, Clock, FileText, BarChart3, Mail, MessageSquare, Link, MapPin, Calendar, Image as ImageIcon } from 'lucide-react';
 
 export default function AdminSettings() {
   const [settings, setSettings] = useState({
@@ -151,21 +151,61 @@ export default function AdminSettings() {
                   <label>Çalıştay Tam İsmi</label>
                   <input className="form-input" value={settings.workshopName} onChange={e => setSettings({...settings, workshopName: e.target.value})} placeholder="Örn: GalÇal 2026 Çalıştayı" />
                 </div>
-                <div className="form-group">
-                  <label><MapPin size={14} /> Tarih ve Yer Sloganı</label>
-                  <input className="form-input" value={settings.dateAndLocation} onChange={e => setSettings({...settings, dateAndLocation: e.target.value})} placeholder="Örn: 15-17 Mayıs | İstanbul" />
-                </div>
-                <div className="form-group">
-                  <label><Link size={14} /> Instagram Adresi</label>
-                  <input className="form-input" value={settings.instagramUrl} onChange={e => setSettings({...settings, instagramUrl: e.target.value})} placeholder="https://instagram.com/..." />
+              </div>
+
+              <div style={{ margin: '2rem 0', padding: '2rem', background: 'rgba(255,255,255,0.02)', borderRadius: '16px', border: '1px solid var(--glass-border)' }}>
+                <h3 style={{ fontSize: '1rem', marginBottom: '1.5rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                  <ImageIcon size={18} color="var(--primary)" /> Favicon & Logo Yönetimi
+                </h3>
+                <div style={{ display: 'flex', gap: '2rem', alignItems: 'center', flexWrap: 'wrap' }}>
+                  <div style={{ width: '80px', height: '80px', background: 'rgba(0,0,0,0.2)', borderRadius: '12px', display: 'flex', alignItems: 'center', justifyContent: 'center', border: '1px solid var(--glass-border)' }}>
+                    {settings.faviconUrl ? (
+                      <img src={settings.faviconUrl} alt="Favicon" style={{ width: '48px', height: '48px', objectFit: 'contain' }} />
+                    ) : (
+                      <ImageIcon size={32} style={{ opacity: 0.2 }} />
+                    )}
+                  </div>
+                  <div style={{ flex: 1 }}>
+                    <label style={{ display: 'block', marginBottom: '0.5rem' }}>Site İkonu Yükle (Favicon)</label>
+                    <input type="file" className="form-input" onChange={async (e) => {
+                      const file = e.target.files[0];
+                      if (!file) return;
+                      const formData = new FormData();
+                      formData.append('file', file);
+                      const res = await fetch('/api/upload', { method: 'POST', body: formData });
+                      const data = await res.json();
+                      if (data.url) setSettings({ ...settings, faviconUrl: data.url });
+                    }} accept="image/*" />
+                  </div>
+                  <div style={{ padding: '1rem', background: 'rgba(255,255,255,0.03)', borderRadius: '10px', display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+                    <label style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', cursor: 'pointer' }}>
+                      <input type="checkbox" checked={settings.showFaviconInNavbar} onChange={e => setSettings({...settings, showFaviconInNavbar: e.target.checked})} />
+                      Navbarda İsmin Yanında Göster?
+                    </label>
+                    {settings.showFaviconInNavbar && (
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+                        <span style={{ fontSize: '0.8rem', opacity: 0.7 }}>Boyut (px):</span>
+                        <input 
+                          type="number" 
+                          className="form-input" 
+                          style={{ width: '80px', padding: '0.4rem' }} 
+                          value={settings.navbarLogoSize || 32} 
+                          onChange={e => setSettings({...settings, navbarLogoSize: parseInt(e.target.value)})} 
+                        />
+                      </div>
+                    )}
+                  </div>
                 </div>
               </div>
+
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '2rem' }}>
               <div className="form-group" style={{ marginTop: '1rem' }}>
                 <label>Kısa Slogan / Alt Başlık</label>
                 <input className="form-input" value={settings.shortDescription} onChange={e => setSettings({...settings, shortDescription: e.target.value})} />
               </div>
             </div>
-          )}
+          </div>
+        )}
 
           {/* TIMING TAB */}
           {activeTab === 'timing' && (

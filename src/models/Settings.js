@@ -3,6 +3,9 @@ import mongoose from 'mongoose';
 const SettingsSchema = new mongoose.Schema({
   workshopName: { type: String, default: 'Lise Çalıştayı' },
   siteName: { type: String, default: 'GalÇal 26' },
+  faviconUrl: { type: String, default: '' },
+  showFaviconInNavbar: { type: Boolean, default: true },
+  navbarLogoSize: { type: Number, default: 32 },
   shortDescription: { type: String, default: 'Geleceğin Liderlerini Yetiştiriyoruz' },
   instagramUrl: { type: String, default: 'https://instagram.com' },
   dateAndLocation: { type: String, default: 'Bahar Dönemi | İstanbul' },

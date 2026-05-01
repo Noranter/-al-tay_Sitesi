@@ -53,7 +53,18 @@ export default function RootLayoutContent({ children }) {
     <>
       <nav className={`navbar ${isScrolled ? 'glass' : ''}`} style={{ background: isScrolled ? 'var(--glass-bg)' : 'transparent' }}>
         <div className="container navbar-content">
-          <Link href="/" style={{ fontSize: '1.5rem', fontWeight: 'bold', color: 'var(--primary)' }}>
+          <Link href="/" style={{ fontSize: '1.5rem', fontWeight: 'bold', color: 'var(--primary)', display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+            {settings?.showFaviconInNavbar && settings?.faviconUrl && (
+              <img 
+                src={settings.faviconUrl} 
+                alt="Logo" 
+                style={{ 
+                  width: `${settings.navbarLogoSize || 32}px`, 
+                  height: `${settings.navbarLogoSize || 32}px`, 
+                  objectFit: 'contain' 
+                }} 
+              />
+            )}
             {settings?.siteName || 'GalÇal 26'}
           </Link>
           
