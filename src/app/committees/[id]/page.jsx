@@ -8,25 +8,29 @@ import ApplicationModal from '@/components/ApplicationModal';
 export default function CommitteeDetail({ params }) {
   const { id } = use(params);
   const [committee, setCommittee] = useState(null);
+  const [settings, setSettings] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   useEffect(() => {
-    fetch(`/api/committees/${id}`)
-      .then(res => {
+    Promise.all([
+      fetch(`/api/committees/${id}`).then(res => {
         if (!res.ok) throw new Error('Komite bilgileri getirilemedi');
         return res.json();
-      })
-      .then(data => {
-        setCommittee(data);
-        setLoading(false);
-      })
-      .catch((err) => {
-        console.error('Yükleme hatası:', err);
-        setError(err.message);
-        setLoading(false);
-      });
+      }),
+      fetch('/api/settings').then(res => res.json())
+    ])
+    .then(([committeeData, settingsData]) => {
+      setCommittee(committeeData);
+      setSettings(settingsData);
+      setLoading(false);
+    })
+    .catch((err) => {
+      console.error('Yükleme hatası:', err);
+      setError(err.message);
+      setLoading(false);
+    });
   }, [id]);
 
   if (loading) return (
@@ -197,6 +201,8 @@ export default function CommitteeDetail({ params }) {
         message={committee.applicationMessage}
         email={committee.applicationEmail}
         url={committee.applicationUrl}
+        deadline={settings?.applicationDeadline}
+        expiredMessage={settings?.deadlineExpiredMessage}
       />
     </div>
   );

@@ -16,6 +16,13 @@ const SettingsSchema = new mongoose.Schema({
   committeesPageTitle: { type: String, default: 'Akademik Komiteler' },
   committeesPageSubtitle: { type: String, default: 'Çalıştayımız bünyesinde yer alan akademik komiteler ve detayları.' },
   
+  // Timing & Deadlines
+  workshopStartDate: { type: Date },
+  workshopDurationDays: { type: Number, default: 3 },
+  applicationDeadline: { type: Date },
+  deadlineExpiredMessage: { type: String, default: 'Başvuru süresi dolmuştur :(' },
+  workshopHappeningMessage: { type: String, default: 'Çalıştay şu anda gerçekleşiyor!' },
+  
   // Why Join / Highlights Section
   highlights: [{
     title: String,
