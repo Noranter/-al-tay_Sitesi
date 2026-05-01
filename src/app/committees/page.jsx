@@ -6,24 +6,21 @@ import { ArrowRight, BookOpen } from 'lucide-react';
 
 export default function Committees() {
   const [committees, setCommittees] = useState([]);
+  const [settings, setSettings] = useState(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch('/api/committees')
-      .then(res => res.json())
-      .then(data => {
-        if (Array.isArray(data)) {
-          setCommittees(data);
-        } else {
-          console.error('API did not return an array:', data);
-          setCommittees([]);
-        }
-        setLoading(false);
-      })
-      .catch((err) => {
-        console.error('Fetch error:', err);
-        setLoading(false);
-      });
+    Promise.all([
+      fetch('/api/committees').then(res => res.json()),
+      fetch('/api/settings').then(res => res.json())
+    ]).then(([committeesData, settingsData]) => {
+      if (Array.isArray(committeesData)) setCommittees(committeesData);
+      if (settingsData) setSettings(settingsData);
+      setLoading(false);
+    }).catch((err) => {
+      console.error('Fetch error:', err);
+      setLoading(false);
+    });
   }, []);
 
   if (loading) return <div className="container">Yükleniyor...</div>;
@@ -31,8 +28,8 @@ export default function Committees() {
   return (
     <div className="container">
       <header style={{ marginBottom: '3rem', textAlign: 'center' }}>
-        <h1 className="section-title">Akademik Komiteler</h1>
-        <p style={{ opacity: 0.8, fontSize: '1.2rem' }}>Çalıştayımız bünyesinde yer alan 4 ana komite ve detayları.</p>
+        <h1 className="section-title">{settings?.committeesPageTitle || 'Akademik Komiteler'}</h1>
+        <p style={{ opacity: 0.8, fontSize: '1.2rem' }}>{settings?.committeesPageSubtitle || 'Çalıştayımız bünyesinde yer alan akademik komiteler ve detayları.'}</p>
       </header>
 
       {committees.length === 0 ? (

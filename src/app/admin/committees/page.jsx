@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { Plus, Trash2, Edit2, X, Check } from 'lucide-react';
+import { Plus, Trash2, Edit2, X, Check, Users } from 'lucide-react';
 
 export default function AdminCommittees() {
   const [committees, setCommittees] = useState([]);
@@ -174,53 +174,71 @@ export default function AdminCommittees() {
               </div>
             </div>
 
-            <div className="form-group">
-              <label>Komite Banner (Önerilen Oran 3:1)</label>
-              <input type="file" className="form-input" onChange={e => handleFileUpload(e, 'banner')} accept="image/*" />
-              {formData.bannerUrl && (
-                <div style={{ marginTop: '1rem' }}>
-                  <img src={formData.bannerUrl} alt="Banner Preview" style={{ width: '200px', height: '66px', objectFit: 'cover', borderRadius: '8px', border: '1px solid var(--primary)' }} />
-                  <p style={{ fontSize: '0.8rem', color: 'var(--primary)' }}>Yüklendi: {formData.bannerUrl}</p>
+            <div className="form-group" style={{ border: '1px dashed var(--glass-border)', padding: '1.5rem', borderRadius: '12px', background: 'rgba(255,255,255,0.02)' }}>
+              <label style={{ display: 'block', marginBottom: '1rem', fontWeight: 'bold' }}>Komite Banner (Önerilen Oran 3:1)</label>
+              <div style={{ display: 'flex', gap: '1.5rem', alignItems: 'center', flexWrap: 'wrap' }}>
+                <div style={{ position: 'relative', width: '240px', height: '80px', background: 'rgba(0,0,0,0.2)', borderRadius: '8px', overflow: 'hidden', display: 'flex', alignItems: 'center', justifyContent: 'center', border: '1px solid var(--glass-border)' }}>
+                  {formData.bannerUrl ? (
+                    <>
+                      <img src={formData.bannerUrl} alt="Banner Preview" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                      <button 
+                        onClick={() => setFormData({ ...formData, bannerUrl: '' })}
+                        style={{ position: 'absolute', top: '5px', right: '5px', background: '#ef4444', color: 'white', border: 'none', borderRadius: '50%', width: '24px', height: '24px', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+                        title="Bannerı Kaldır"
+                      >
+                        <X size={14} />
+                      </button>
+                    </>
+                  ) : (
+                    <span style={{ opacity: 0.4, fontSize: '0.8rem' }}>Görsel Yok</span>
+                  )}
                 </div>
-              )}
+                <div style={{ flex: 1 }}>
+                  <input type="file" className="form-input" onChange={e => handleFileUpload(e, 'banner')} accept="image/*" style={{ marginBottom: '0.5rem' }} />
+                  <p style={{ fontSize: '0.7rem', opacity: 0.6 }}>Yüklenen görseller otomatik olarak optimize edilir.</p>
+                </div>
+              </div>
             </div>
 
-            <div className="form-group">
+            <div className="form-group" style={{ marginTop: '2rem' }}>
               <label>Açıklama</label>
-              <textarea className="form-input" value={formData.description} onChange={e => setFormData({...formData, description: e.target.value})} />
+              <textarea className="form-input" style={{ minHeight: '120px' }} value={formData.description} onChange={e => setFormData({...formData, description: e.target.value})} />
             </div>
 
             <div className="form-group">
               <label>Başvuru Mesajı (Popup'ta görünecek)</label>
-              <textarea className="form-input" placeholder="Başvurmak için mail atın..." value={formData.applicationMessage} onChange={e => setFormData({...formData, applicationMessage: e.target.value})} />
+              <textarea className="form-input" style={{ minHeight: '80px' }} placeholder="Başvurmak için mail atın..." value={formData.applicationMessage} onChange={e => setFormData({...formData, applicationMessage: e.target.value})} />
             </div>
 
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.5rem' }}>
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.5rem', marginBottom: '2rem' }}>
               <div className="form-group">
                 <label>Vizyon</label>
-                <input className="form-input" value={formData.vision} onChange={e => setFormData({...formData, vision: e.target.value})} />
+                <textarea className="form-input" style={{ minHeight: '80px' }} value={formData.vision} onChange={e => setFormData({...formData, vision: e.target.value})} />
               </div>
               <div className="form-group">
                 <label>Misyon</label>
-                <input className="form-input" value={formData.mission} onChange={e => setFormData({...formData, mission: e.target.value})} />
+                <textarea className="form-input" style={{ minHeight: '80px' }} value={formData.mission} onChange={e => setFormData({...formData, mission: e.target.value})} />
               </div>
             </div>
 
-            <div style={{ border: '1px solid rgba(255,255,255,0.1)', padding: '1.5rem', borderRadius: '12px', marginBottom: '1.5rem' }}>
-              <h4 style={{ marginBottom: '1rem' }}>Komite Ekibi (Yönetim Kurulundan Seçin)</h4>
+            <div style={{ border: '1px solid rgba(197, 160, 89, 0.1)', padding: '2rem', borderRadius: '12px', marginBottom: '2rem', background: 'rgba(197, 160, 89, 0.02)' }}>
+              <h4 style={{ marginBottom: '1.5rem', display: 'flex', alignItems: 'center', gap: '0.5rem', color: 'var(--primary)' }}>
+                <Users size={20} /> Komite Ekibi Yönetimi
+              </h4>
               
-              <div className="form-group">
-                <label>Divanlar (En fazla 2 kişi)</label>
-                <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem', marginTop: '0.5rem' }}>
+              <div className="form-group" style={{ marginBottom: '2rem' }}>
+                <label style={{ display: 'block', marginBottom: '0.75rem' }}>Divanlar (Yönetim Kurulundan En Fazla 2 Kişi Seçin)</label>
+                <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.75rem', marginTop: '0.5rem', maxHeight: '150px', overflowY: 'auto', padding: '0.5rem', background: 'rgba(0,0,0,0.1)', borderRadius: '8px' }}>
                   {boardMembers.map(bm => (
                     <div 
                       key={bm._id} 
                       onClick={() => toggleDivanMember(bm._id)}
                       style={{ 
-                        padding: '0.4rem 0.8rem', borderRadius: '20px', cursor: 'pointer', fontSize: '0.8rem',
+                        padding: '0.5rem 1rem', borderRadius: '4px', cursor: 'pointer', fontSize: '0.85rem',
                         background: formData.divanMembers?.includes(bm._id) ? 'var(--primary)' : 'rgba(255,255,255,0.05)',
-                        color: formData.divanMembers?.includes(bm._id) ? 'white' : 'inherit',
-                        border: '1px solid rgba(255,255,255,0.1)'
+                        color: formData.divanMembers?.includes(bm._id) ? 'black' : 'inherit',
+                        border: '1px solid rgba(255,255,255,0.1)',
+                        transition: 'all 0.2s'
                       }}
                     >
                       {bm.name}
@@ -229,23 +247,23 @@ export default function AdminCommittees() {
                 </div>
               </div>
 
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '1rem' }}>
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: '1.5rem' }}>
                 <div className="form-group">
-                  <label>Admin (1 Kişi)</label>
+                  <label>Admin</label>
                   <select className="form-input" value={formData.adminMember || ''} onChange={e => setFormData({...formData, adminMember: e.target.value || null})}>
                     <option value="">Seçiniz...</option>
                     {boardMembers.map(bm => <option key={bm._id} value={bm._id}>{bm.name}</option>)}
                   </select>
                 </div>
                 <div className="form-group">
-                  <label>Sekreter (1 Kişi)</label>
+                  <label>Sekreter</label>
                   <select className="form-input" value={formData.secretaryMember || ''} onChange={e => setFormData({...formData, secretaryMember: e.target.value || null})}>
                     <option value="">Seçiniz...</option>
                     {boardMembers.map(bm => <option key={bm._id} value={bm._id}>{bm.name}</option>)}
                   </select>
                 </div>
                 <div className="form-group">
-                  <label>Basın (1 Kişi)</label>
+                  <label>Basın</label>
                   <select className="form-input" value={formData.pressMember || ''} onChange={e => setFormData({...formData, pressMember: e.target.value || null})}>
                     <option value="">Seçiniz...</option>
                     {boardMembers.map(bm => <option key={bm._id} value={bm._id}>{bm.name}</option>)}
@@ -254,15 +272,26 @@ export default function AdminCommittees() {
               </div>
             </div>
 
-            <div className="form-group">
-              <label>Çalışma Kağıdı Yükle (PDF veya Görsel)</label>
-              <input type="file" className="form-input" onChange={handleFileUpload} />
-              {formData.workingPaperUrl && <p style={{ fontSize: '0.8rem', color: 'var(--primary)' }}>Yüklendi: {formData.workingPaperUrl}</p>}
+            <div className="form-group" style={{ marginBottom: '2rem', padding: '1.5rem', borderRadius: '12px', border: '1px solid var(--glass-border)' }}>
+              <label>Çalışma Kağıdı (PDF / Görsel)</label>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginTop: '0.5rem' }}>
+                <input type="file" className="form-input" onChange={handleFileUpload} style={{ flex: 1 }} />
+                {formData.workingPaperUrl && (
+                   <button 
+                    onClick={() => setFormData({ ...formData, workingPaperUrl: '' })}
+                    className="btn"
+                    style={{ background: 'rgba(239, 68, 68, 0.1)', color: '#ef4444', padding: '0.5rem' }}
+                   >
+                    <X size={18} />
+                   </button>
+                )}
+              </div>
+              {formData.workingPaperUrl && <p style={{ fontSize: '0.75rem', color: 'var(--primary)', marginTop: '0.5rem' }}>Mevcut Dosya: {formData.workingPaperUrl}</p>}
             </div>
 
-            <div style={{ display: 'flex', gap: '1rem' }}>
-              <button className="btn btn-primary" onClick={handleSave}><Check size={18} /> Kaydet</button>
-              <button className="btn" onClick={() => setEditingId(null)}><X size={18} /> İptal</button>
+            <div style={{ display: 'flex', gap: '1rem', borderTop: '1px solid var(--glass-border)', paddingTop: '2rem' }}>
+              <button className="btn btn-primary" style={{ padding: '1rem 2.5rem' }} onClick={handleSave}><Check size={18} /> Kaydet</button>
+              <button className="btn" style={{ padding: '1rem 2.5rem' }} onClick={() => setEditingId(null)}><X size={18} /> İptal</button>
             </div>
           </div>
         </div>

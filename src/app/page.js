@@ -8,19 +8,50 @@ import ApplicationModal from '@/components/ApplicationModal';
 export default function Home() {
   const [settings, setSettings] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   useEffect(() => {
-    fetch('/api/settings')
-      .then(res => res.json())
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 15000);
+
+    fetch('/api/settings', { signal: controller.signal })
+      .then(res => {
+        if (!res.ok) throw new Error('Sunucu hatası: ' + res.status);
+        return res.json();
+      })
       .then(data => {
         setSettings(data);
         setLoading(false);
+        clearTimeout(timeoutId);
       })
-      .catch(() => setLoading(false));
+      .catch((err) => {
+        console.error('Veri yükleme hatası:', err);
+        setError(err.name === 'AbortError' ? 'İstek zaman aşımına uğradı' : err.message);
+        setLoading(false);
+      });
+
+    return () => clearTimeout(timeoutId);
   }, []);
 
-  if (loading) return <div className="container">Yükleniyor...</div>;
+  if (loading) return (
+    <div className="container" style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '60vh' }}>
+      <div className="glass card" style={{ textAlign: 'center' }}>
+        <h2 style={{ color: 'var(--primary)', marginBottom: '1rem' }}>Yükleniyor...</h2>
+        <p style={{ opacity: 0.7 }}>Lütfen bekleyin, veriler getiriliyor.</p>
+      </div>
+    </div>
+  );
+
+  if (error) return (
+    <div className="container" style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '60vh' }}>
+      <div className="glass card" style={{ textAlign: 'center', borderColor: '#ff4d4d' }}>
+        <h2 style={{ color: '#ff4d4d', marginBottom: '1rem' }}>Bağlantı Hatası</h2>
+        <p style={{ opacity: 0.7, marginBottom: '1.5rem' }}>Veritabanına bağlanılamadı. Lütfen internet bağlantınızı veya MongoDB ayarlarınızı kontrol edin.</p>
+        <button onClick={() => window.location.reload()} className="btn btn-primary">Yeniden Dene</button>
+      </div>
+    </div>
+  );
 
   return (
     <div className="container">

@@ -177,6 +177,27 @@ export default function AdminSettings() {
           </div>
 
           <div style={{ borderTop: '1px solid rgba(255,255,255,0.1)', margin: '2rem 0', paddingTop: '2rem' }}>
+            <h3 style={{ marginBottom: '1.5rem' }}>Komiteler Sayfası Ayarları</h3>
+            <div className="form-group">
+              <label>Komiteler Sayfası Başlığı</label>
+              <input 
+                className="form-input" 
+                value={settings.committeesPageTitle} 
+                onChange={e => setSettings({...settings, committeesPageTitle: e.target.value})} 
+              />
+            </div>
+            <div className="form-group">
+              <label>Komiteler Sayfası Alt Başlığı</label>
+              <textarea 
+                className="form-input" 
+                rows="2"
+                value={settings.committeesPageSubtitle} 
+                onChange={e => setSettings({...settings, committeesPageSubtitle: e.target.value})} 
+              />
+            </div>
+          </div>
+
+          <div style={{ borderTop: '1px solid rgba(255,255,255,0.1)', margin: '2rem 0', paddingTop: '2rem' }}>
             <h3 style={{ marginBottom: '1.5rem' }}>Genel Başvuru Ayarları</h3>
             <div className="form-group">
               <label>Genel Başvuru Mesajı</label>

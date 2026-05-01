@@ -24,6 +24,7 @@ export async function GET() {
     const members = await BoardMember.find({}).sort({ order: 1, createdAt: 1 });
     return NextResponse.json(members);
   } catch (error) {
+    console.error('API Error in GET /api/board:', error);
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
 }
@@ -38,6 +39,7 @@ export async function POST(req) {
     const member = await BoardMember.create(data);
     return NextResponse.json(member, { status: 201 });
   } catch (error) {
+    console.error('API Error in POST /api/board:', error);
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
 }

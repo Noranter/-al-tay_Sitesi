@@ -20,13 +20,20 @@ async function isAuthenticated() {
 
 export async function GET() {
   try {
+    const start = Date.now();
+    console.log(`[${new Date().toISOString()}] API: Connecting to DB...`);
     await dbConnect();
+    console.log(`[${new Date().toISOString()}] API: Connected after ${Date.now() - start}ms, finding settings...`);
+    const findStart = Date.now();
     let settings = await Settings.findOne();
+    console.log(`[${new Date().toISOString()}] API: Settings found in ${Date.now() - findStart}ms:`, !!settings);
     if (!settings) {
+      console.log(`[${new Date().toISOString()}] API: Creating default settings...`);
       settings = await Settings.create({});
     }
     return NextResponse.json(settings);
   } catch (error) {
+    console.error(`[${new Date().toISOString()}] API Error in /api/settings:`, error);
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
 }

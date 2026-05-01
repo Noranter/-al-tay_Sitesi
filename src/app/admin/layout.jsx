@@ -13,32 +13,35 @@ export default function AdminLayout({ children }) {
   };
 
   return (
-    <div className="container" style={{ display: 'grid', gridTemplateColumns: '250px 1fr', gap: '2rem', paddingBottom: '4rem' }}>
+    <div className="container" style={{ display: 'grid', gridTemplateColumns: '280px 1fr', gap: '3rem', paddingBottom: '4rem', paddingTop: '2rem' }}>
       <aside>
-        <div className="glass" style={{ padding: '1.5rem', position: 'sticky', top: '100px', display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
-          <h3 style={{ marginBottom: '1rem', paddingLeft: '0.5rem', opacity: 0.7, fontSize: '0.9rem', textTransform: 'uppercase' }}>Menü</h3>
+        <div className="glass card" style={{ padding: '1.5rem', position: 'sticky', top: '100px', display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+          <div style={{ padding: '0 0.5rem 1rem 0.5rem', borderBottom: '1px solid var(--glass-border)', marginBottom: '0.5rem' }}>
+            <h3 style={{ color: 'var(--primary)', fontSize: '1.1rem', fontWeight: '800' }}>Admin Panel</h3>
+            <p style={{ fontSize: '0.75rem', opacity: 0.6 }}>İçerik Yönetim Sistemi</p>
+          </div>
           
-          <Link href="/admin" className="btn" style={{ width: '100%', justifyContent: 'flex-start', background: 'none' }}>
+          <Link href="/admin" className="btn" style={{ width: '100%', justifyContent: 'flex-start', background: 'none', padding: '0.75rem 1rem' }}>
             <LayoutDashboard size={18} /> Genel Durum
           </Link>
           
-          <Link href="/admin/settings" className="btn" style={{ width: '100%', justifyContent: 'flex-start', background: 'none' }}>
+          <Link href="/admin/settings" className="btn" style={{ width: '100%', justifyContent: 'flex-start', background: 'none', padding: '0.75rem 1rem' }}>
             <Settings size={18} /> Site Ayarları
           </Link>
           
-          <Link href="/admin/committees" className="btn" style={{ width: '100%', justifyContent: 'flex-start', background: 'none' }}>
+          <Link href="/admin/committees" className="btn" style={{ width: '100%', justifyContent: 'flex-start', background: 'none', padding: '0.75rem 1rem' }}>
             <ClipboardList size={18} /> Komiteler
           </Link>
           
-          <Link href="/admin/board" className="btn" style={{ width: '100%', justifyContent: 'flex-start', background: 'none' }}>
+          <Link href="/admin/board" className="btn" style={{ width: '100%', justifyContent: 'flex-start', background: 'none', padding: '0.75rem 1rem' }}>
             <Users size={18} /> Yönetim Kurulu
           </Link>
 
-          <hr style={{ margin: '1rem 0', border: 'none', borderTop: '1px solid var(--glass-border)' }} />
-
-          <button onClick={handleLogout} className="btn" style={{ width: '100%', justifyContent: 'flex-start', background: 'none', color: '#ef4444' }}>
-            <LogOut size={18} /> Çıkış Yap
-          </button>
+          <div style={{ marginTop: 'auto', paddingTop: '1rem' }}>
+            <button onClick={handleLogout} className="btn" style={{ width: '100%', justifyContent: 'flex-start', background: 'rgba(239, 68, 68, 0.05)', color: '#ef4444', border: '1px solid rgba(239, 68, 68, 0.1)' }}>
+              <LogOut size={18} /> Çıkış Yap
+            </button>
+          </div>
         </div>
       </aside>
 

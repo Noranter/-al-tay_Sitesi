@@ -12,6 +12,10 @@ const SettingsSchema = new mongoose.Schema({
   globalApplicationEmail: { type: String, default: 'iletisim@galcal.com' },
   globalApplicationUrl: { type: String, default: '' },
   
+  // Committees Page
+  committeesPageTitle: { type: String, default: 'Akademik Komiteler' },
+  committeesPageSubtitle: { type: String, default: 'Çalıştayımız bünyesinde yer alan akademik komiteler ve detayları.' },
+  
   // Why Join / Highlights Section
   highlights: [{
     title: String,
