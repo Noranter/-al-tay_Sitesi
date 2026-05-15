@@ -62,7 +62,7 @@ export default function Board() {
       ) : (
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '2.5rem' }}>
           {members.map((member) => (
-            <div key={member._id} className="glass card" style={{ 
+            <div key={member._id} className="glass card member-card-wrapper" style={{ 
               textAlign: 'center', 
               display: 'flex', 
               flexDirection: 'column', 
@@ -74,10 +74,12 @@ export default function Board() {
                 width: '180px', 
                 height: '180px', 
                 borderRadius: '50%', 
-                background: 'linear-gradient(135deg, var(--primary), #ec4899)',
+                background: 'linear-gradient(135deg, var(--primary), #b38f4d)',
                 padding: '4px',
-                marginBottom: '1.5rem'
-              }}>
+                marginBottom: '2rem',
+                boxShadow: '0 15px 35px rgba(0,0,0,0.3)',
+                transition: 'transform 0.4s ease'
+              }} className="member-image-container">
                 <div style={{ 
                   width: '100%', 
                   height: '100%', 
@@ -91,19 +93,57 @@ export default function Board() {
                   {member.photoUrl ? (
                     <img src={member.photoUrl} alt={member.name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                   ) : (
-                    <User size={64} color="var(--primary)" style={{ opacity: 0.5 }} />
+                    <User size={64} color="var(--primary)" style={{ opacity: 0.3 }} />
                   )}
                 </div>
               </div>
-              <h2 style={{ fontSize: '1.4rem', marginBottom: '0.25rem' }}>{member.name}</h2>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', color: 'var(--primary)', fontWeight: '600' }}>
-                <ShieldCheck size={18} />
-                <span>{member.role}</span>
+              <h2 style={{ fontSize: '1.6rem', fontWeight: '800', marginBottom: '0.75rem', letterSpacing: '-0.5px' }}>{member.name}</h2>
+              <div style={{ 
+                display: 'flex', 
+                flexWrap: 'wrap',
+                justifyContent: 'center',
+                gap: '0.5rem', 
+                padding: '0 1rem'
+              }}>
+                {member.roles?.map(role => (
+                  <div key={role._id} style={{ 
+                    display: 'flex', 
+                    alignItems: 'center', 
+                    gap: '0.4rem', 
+                    color: 'var(--primary)', 
+                    fontWeight: '700',
+                    background: 'rgba(197, 160, 89, 0.1)',
+                    padding: '4px 12px',
+                    borderRadius: '30px',
+                    fontSize: '0.75rem',
+                    border: '1px solid rgba(197, 160, 89, 0.2)',
+                    textTransform: 'uppercase',
+                    letterSpacing: '0.5px'
+                  }}>
+                    <ShieldCheck size={14} />
+                    <span>{role.name}</span>
+                  </div>
+                ))}
+                {(!member.roles || member.roles.length === 0) && (
+                  <span style={{ opacity: 0.5, fontSize: '0.8rem italic' }}>Yönetim Kurulu Üyesi</span>
+                )}
               </div>
             </div>
           ))}
         </div>
       )}
+      <style jsx>{`
+        .member-card-wrapper:hover .member-image-container {
+          transform: scale(1.05) rotate(2deg);
+        }
+        .member-card-wrapper {
+          transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        .member-card-wrapper:hover {
+          transform: translateY(-10px);
+          background: rgba(255, 255, 255, 0.05) !important;
+        }
+      `}</style>
     </div>
   );
 }

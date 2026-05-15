@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import dbConnect from '@/lib/mongodb';
+import Role from '@/models/Role';
 import BoardMember from '@/models/BoardMember';
 import jwt from 'jsonwebtoken';
 import { cookies } from 'next/headers';
@@ -21,7 +22,7 @@ async function isAuthenticated() {
 export async function GET() {
   try {
     await dbConnect();
-    const members = await BoardMember.find({}).sort({ order: 1, createdAt: 1 });
+    const members = await BoardMember.find().populate('roles').sort({ order: 1 });
     return NextResponse.json(members);
   } catch (error) {
     console.error('API Error in GET /api/board:', error);
