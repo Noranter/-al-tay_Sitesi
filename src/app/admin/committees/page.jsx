@@ -95,15 +95,26 @@ export default function AdminCommittees() {
 
     try {
       const res = await fetch('/api/upload', { method: 'POST', body: uploadData });
-      const data = await res.json();
-      if (data.url) {
+      
+      let data = {};
+      const contentType = res.headers.get('content-type');
+      if (contentType && contentType.includes('application/json')) {
+        data = await res.json();
+      } else {
+        const text = await res.text();
+        throw new Error(text.substring(0, 100) || 'Bilinmeyen sunucu hatası');
+      }
+
+      if (res.ok && data.url) {
         setFormData({ ...formData, [type === 'banner' ? 'bannerUrl' : 'workingPaperUrl']: data.url });
         setStatus({ type: 'success', message: 'Dosya başarıyla yüklendi!' });
         setTimeout(() => setStatus({ type: '', message: '' }), 2000);
+      } else {
+        setStatus({ type: 'error', message: data.error || 'Yükleme başarısız oldu.' });
       }
     } catch (err) {
       console.error('Upload failed', err);
-      setStatus({ type: 'error', message: 'Dosya yüklenemedi.' });
+      setStatus({ type: 'error', message: `Dosya yüklenemedi: ${err.message || 'Bağlantı hatası'}` });
     }
   };
 

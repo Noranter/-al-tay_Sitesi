@@ -149,10 +149,29 @@ export default function AdminBoard() {
     uploadData.append('file', file);
     try {
       const res = await fetch('/api/upload', { method: 'POST', body: uploadData });
-      const data = await res.json();
-      if (data.url) setMemberFormData({ ...memberFormData, photoUrl: data.url });
-    } catch (err) { setStatus({ type: 'error', message: 'Hata.' }); }
-    finally { setIsUploading(false); }
+      
+      let data = {};
+      const contentType = res.headers.get('content-type');
+      if (contentType && contentType.includes('application/json')) {
+        data = await res.json();
+      } else {
+        const text = await res.text();
+        throw new Error(text.substring(0, 100) || 'Bilinmeyen sunucu hatası');
+      }
+
+      if (res.ok && data.url) {
+        setMemberFormData({ ...memberFormData, photoUrl: data.url });
+        setStatus({ type: 'success', message: 'Fotoğraf başarıyla yüklendi!' });
+        setTimeout(() => setStatus({ type: '', message: '' }), 2000);
+      } else {
+        setStatus({ type: 'error', message: data.error || 'Dosya yükleme sunucu tarafından reddedildi.' });
+      }
+    } catch (err) { 
+      console.error('Upload client error:', err);
+      setStatus({ type: 'error', message: `Fotoğraf yüklenemedi: ${err.message || 'Bağlantı hatası'}` }); 
+    } finally { 
+      setIsUploading(false); 
+    }
   };
 
   const handleUpdateRoleLevel = async (roleId, level) => {
