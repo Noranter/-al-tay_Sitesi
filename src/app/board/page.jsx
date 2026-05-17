@@ -98,6 +98,54 @@ export default function Board() {
     return `99999_zzzz_${memberOrder}`;
   };
 
+  // Pure Page-Wide Progressive Pyramidal Chunker:
+  // Enforces the user's exact formula: first sub-row of current level = previous bottom sub-row + 1.
+  // Splits the remaining members into the next sub-row, perfectly balancing the rows.
+  const getStrictPyramidRowSizes = (total, minFirstRowSize) => {
+    if (total <= 0) return [];
+    
+    // If total is too small to even satisfy the minFirstRowSize constraint on 1 row,
+    // we cannot split. Return as single row to preserve visual integrity.
+    if (total <= 9 && total < minFirstRowSize) {
+      return [total];
+    }
+    
+    let numRows = Math.ceil(total / 8) || 1;
+    // Force split if total exceeds 9 or if we can split progressive-pyramidally
+    if (numRows < 2 && (total > 9 || total >= minFirstRowSize + 2)) {
+      numRows = 2;
+    }
+    
+    if (numRows === 1) {
+      return [total];
+    }
+    
+    if (numRows === 2) {
+      // First row size is EXACTLY at least minFirstRowSize (previous bottom + 1), but balanced if total is large
+      const s0 = Math.max(minFirstRowSize, Math.floor(total / 2));
+      const s1 = total - s0;
+      
+      if (s1 <= 0) {
+        return [total];
+      }
+      return [s0, s1];
+    }
+    
+    if (numRows === 3) {
+      const s0 = Math.max(minFirstRowSize, Math.floor(total / 3));
+      const remaining = total - s0;
+      const s1 = Math.floor(remaining / 2);
+      const s2 = remaining - s1;
+      
+      if (s1 <= 0 || s2 <= 0) {
+        return [total];
+      }
+      return [s0, s1, s2];
+    }
+    
+    return [total];
+  };
+
   // Group members into their respective rows based on active role associations (a member can appear in multiple rows!)
   const row0Members = members
     .filter(m => hasRoleAtLevel(m, 1))
@@ -114,6 +162,56 @@ export default function Board() {
   const row3Members = members
     .filter(m => hasRoleAtLevel(m, 4))
     .sort((a, b) => getMemberSortKey(a, 4).localeCompare(getMemberSortKey(b, 4)));
+
+  // Generate Page-Wide Chunks matching user's exact sub-row sequence (s_next_first_row = lastBottomSize + 1)
+  let lastBottomSize = 1; // Danışman Öğretmen level base
+
+  let level0Chunks = [];
+  if (row0Members.length > 0) {
+    const sizes = getStrictPyramidRowSizes(row0Members.length, lastBottomSize);
+    let startIndex = 0;
+    level0Chunks = sizes.map(size => {
+      const chunk = row0Members.slice(startIndex, startIndex + size);
+      startIndex += size;
+      return chunk;
+    });
+    lastBottomSize = sizes[sizes.length - 1];
+  }
+
+  let level1Chunks = [];
+  if (row1Members.length > 0) {
+    const sizes = getStrictPyramidRowSizes(row1Members.length, lastBottomSize + 1);
+    let startIndex = 0;
+    level1Chunks = sizes.map(size => {
+      const chunk = row1Members.slice(startIndex, startIndex + size);
+      startIndex += size;
+      return chunk;
+    });
+    lastBottomSize = sizes[sizes.length - 1];
+  }
+
+  let level2Chunks = [];
+  if (row2Members.length > 0) {
+    const sizes = getStrictPyramidRowSizes(row2Members.length, lastBottomSize + 1);
+    let startIndex = 0;
+    level2Chunks = sizes.map(size => {
+      const chunk = row2Members.slice(startIndex, startIndex + size);
+      startIndex += size;
+      return chunk;
+    });
+    lastBottomSize = sizes[sizes.length - 1];
+  }
+
+  let level3Chunks = [];
+  if (row3Members.length > 0) {
+    const sizes = getStrictPyramidRowSizes(row3Members.length, lastBottomSize + 1);
+    let startIndex = 0;
+    level3Chunks = sizes.map(size => {
+      const chunk = row3Members.slice(startIndex, startIndex + size);
+      startIndex += size;
+      return chunk;
+    });
+  }
 
   const renderMemberCard = (member, levelNum) => {
     const cardKey = `${member._id}_lvl_${levelNum}`;
@@ -205,9 +303,17 @@ export default function Board() {
     .pyramid-level {
       display: flex;
       flex-direction: column;
-      gap: 2.2rem; /* Tightened level title gap */
+      gap: 1.5rem; /* Tightened level title gap */
       width: 100%;
       align-items: center;
+    }
+
+    .sub-rows-container {
+      display: flex !important;
+      flex-direction: column !important;
+      gap: 0.5rem !important; /* Tight elegant spacing between sub-rows of the same level */
+      width: 100% !important;
+      align-items: center !important;
     }
     
     .level-title {
@@ -254,8 +360,8 @@ export default function Board() {
       gap: 2vw !important; /* Fluid gap that shrinks with screen size */
       flex-wrap: nowrap !important; /* STRICTLY prevent wrapping */
       width: 100% !important;
-      overflow: hidden !important; /* No scrolling, pure dynamic visual scaling */
-      padding: 2rem 0.5rem !important; /* Increased top padding slightly to protect larger scales */
+      overflow: visible !important; /* Allow 3D card pop-outs to render cleanly with zero clipping! */
+      padding: 0.8rem 0.5rem !important; /* Compact padding for tight vertical spacing */
     }
     
     /* STATIC WRAPPER: Premium physics-based elastic spring transition.
@@ -536,6 +642,77 @@ export default function Board() {
     .member-card-wrapper.active-expanded .role-pill-badge:nth-child(3) { animation-delay: 0.24s; }
     .member-card-wrapper.active-expanded .role-pill-badge:nth-child(4) { animation-delay: 0.32s; }
     .member-card-wrapper.active-expanded .role-pill-badge:nth-child(5) { animation-delay: 0.40s; }
+
+    /* HIGHLY RESPONSIVE MOBILE STYLING GRID */
+    @media (max-width: 768px) {
+      .container {
+        padding-left: 0.6rem !important;
+        padding-right: 0.6rem !important;
+      }
+      .pyramid-container {
+        gap: 2.2rem;
+      }
+      .members-flex-row {
+        flex-wrap: wrap !important; /* Allow elegant grid wrap on small screens! */
+        gap: 1.2rem 1rem !important; /* Elegant vertical row-gap & horizontal gap */
+        padding: 0.5rem 0.2rem !important;
+      }
+      .member-card-wrapper {
+        width: 140px !important; /* Perfect desktop-independent grid width fit */
+        max-width: 140px !important;
+        min-width: 120px !important;
+        aspect-ratio: 140 / 195 !important; /* Extremely neat compact aspect ratio for mobile */
+      }
+      .member-showcase-card {
+        padding: 1.2rem 0.6rem !important; /* Tight internal spacing for mobile screens */
+        border-radius: 14px;
+        gap: 0.7rem !important;
+      }
+      .avatar-container {
+        width: 58% !important; /* Responsive fluid avatar container width */
+        border-width: 1.5px !important;
+      }
+      .member-name {
+        font-size: 0.85rem !important; /* Highly readable font-size on narrow cards */
+        white-space: normal !important; /* Wrap long names onto two lines gracefully */
+        display: -webkit-box !important;
+        -webkit-line-clamp: 2 !important;
+        -webkit-box-orient: vertical !important;
+        overflow: hidden !important;
+        text-overflow: ellipsis !important;
+      }
+      .role-pill-badge {
+        font-size: 0.6rem !important;
+        padding: 0.15rem 0.45rem !important;
+      }
+      
+      /* Mobile Center-Focus Absolute centering math for expanded card overlay */
+      .member-card-wrapper.active-expanded .member-showcase-card {
+        width: 250px !important; /* Large, comfortable-to-read expanded focus card */
+        height: auto !important;
+        min-height: 330px !important;
+        position: absolute !important;
+        left: 50% !important;
+        top: 50% !important;
+        transform: translate(-50%, -50%) scale(1.1) !important; /* Mathematical overlay alignment relative to 140px parent wrapper */
+        box-shadow: 0 20px 60px rgba(212, 175, 55, 0.5) !important;
+        z-index: 100 !important;
+        padding: 2rem 1.2rem !important;
+      }
+      .member-card-wrapper.active-expanded .avatar-container {
+        width: 90px !important;
+        height: 90px !important;
+      }
+      .member-card-wrapper.active-expanded .member-name {
+        font-size: 1.15rem !important;
+        white-space: nowrap !important;
+        display: block !important;
+      }
+      .member-card-wrapper.active-expanded .role-pill-badge {
+        font-size: 0.72rem !important;
+        padding: 0.25rem 0.7rem !important;
+      }
+    }
   `;
 
   return (
@@ -562,8 +739,12 @@ export default function Board() {
           {row0Members.length > 0 && (
             <section className="pyramid-level">
               <h2 className="level-title"><span>1. Sıra</span> Danışman Öğretmen</h2>
-              <div className="members-flex-row">
-                {row0Members.map(m => renderMemberCard(m, 1))}
+              <div className="sub-rows-container">
+                {level0Chunks.map((chunk, idx) => (
+                  <div key={idx} className="members-flex-row">
+                    {chunk.map(m => renderMemberCard(m, 1))}
+                  </div>
+                ))}
               </div>
             </section>
           )}
@@ -572,8 +753,12 @@ export default function Board() {
           {row1Members.length > 0 && (
             <section className="pyramid-level">
               <h2 className="level-title"><span>2. Sıra</span> Genel Koordinatörler</h2>
-              <div className="members-flex-row">
-                {row1Members.map(m => renderMemberCard(m, 2))}
+              <div className="sub-rows-container">
+                {level1Chunks.map((chunk, idx) => (
+                  <div key={idx} className="members-flex-row">
+                    {chunk.map(m => renderMemberCard(m, 2))}
+                  </div>
+                ))}
               </div>
             </section>
           )}
@@ -582,8 +767,12 @@ export default function Board() {
           {row2Members.length > 0 && (
             <section className="pyramid-level">
               <h2 className="level-title"><span>3. Sıra</span> Komiteler, Sekreterler ve Adminler</h2>
-              <div className="members-flex-row">
-                {row2Members.map(m => renderMemberCard(m, 3))}
+              <div className="sub-rows-container">
+                {level2Chunks.map((chunk, idx) => (
+                  <div key={idx} className="members-flex-row">
+                    {chunk.map(m => renderMemberCard(m, 3))}
+                  </div>
+                ))}
               </div>
             </section>
           )}
@@ -592,8 +781,12 @@ export default function Board() {
           {row3Members.length > 0 && (
             <section className="pyramid-level">
               <h2 className="level-title"><span>4. Sıra</span> Ekipler</h2>
-              <div className="members-flex-row">
-                {row3Members.map(m => renderMemberCard(m, 4))}
+              <div className="sub-rows-container">
+                {level3Chunks.map((chunk, idx) => (
+                  <div key={idx} className="members-flex-row">
+                    {chunk.map(m => renderMemberCard(m, 4))}
+                  </div>
+                ))}
               </div>
             </section>
           )}

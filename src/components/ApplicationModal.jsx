@@ -117,36 +117,22 @@ export default function ApplicationModal({ isOpen, onClose, committeeName, messa
           )}
 
           {!isExpired && (
-            <>
-              {url ? (
-                <a href={url} target="_blank" className="btn btn-primary" style={{ width: '100%', fontSize: '1rem' }}>
-                  Başvuru Formuna Git <Send size={18} />
-                </a>
-              ) : (
-                <div className="glass" style={{
-                  padding: '1.5rem',
-                  display: 'flex',
-                  flexDirection: 'column',
-                  alignItems: 'center',
-                  gap: '0.75rem',
-                  background: 'rgba(255, 255, 255, 0.05)'
-                }}>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', color: 'var(--primary)' }}>
-                    <Mail size={20} />
-                    <span style={{ fontWeight: '600' }}>İletişim E-postası:</span>
-                  </div>
-                  <a href={`mailto:${email}`} style={{ 
-                    fontSize: '1.2rem', 
-                    color: 'var(--text)', 
-                    textDecoration: 'none',
-                    fontWeight: 'bold',
-                    borderBottom: '2px solid var(--primary)'
-                  }}>
-                    {email || 'iletisim@galcal.com'}
-                  </a>
-                </div>
-              )}
-            </>
+            <a 
+              href={url || '#'} 
+              target="_blank" 
+              rel="noopener noreferrer" 
+              className="btn btn-primary" 
+              style={{ 
+                width: '100%', 
+                fontSize: '1rem', 
+                display: 'inline-flex', 
+                alignItems: 'center', 
+                justifyContent: 'center', 
+                gap: '0.5rem' 
+              }}
+            >
+              Başvuru Formuna Git <Send size={18} />
+            </a>
           )}
 
           <button className="btn" onClick={onClose} style={{ marginTop: '1.5rem', width: '100%', border: '1px solid rgba(255,255,255,0.1)' }}>

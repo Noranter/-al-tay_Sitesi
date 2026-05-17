@@ -166,7 +166,7 @@ export default function Home() {
         {/* REASONS SECTION */}
         <section style={{ paddingBottom: '15rem' }}>
           <header style={{ textAlign: 'center', marginBottom: '6rem' }}>
-            <h2 style={{ fontSize: '1rem', color: 'var(--primary)', letterSpacing: '6px', textTransform: 'uppercase', marginBottom: '1rem' }}>Neden Bizimle Olmalısın?</h2>
+            <h2 style={{ fontSize: '1rem', color: 'var(--primary)', letterSpacing: '6px', textTransform: 'uppercase', marginBottom: '1rem' }}>{settings?.highlightsTitle || 'Neden Bizimle Olmalısın?'}</h2>
             <div style={{ width: '60px', height: '2px', background: 'var(--primary)', margin: '0 auto' }} />
           </header>
           <div className="utopia-reason-grid">
@@ -251,7 +251,16 @@ export default function Home() {
         }
       `}</style>
 
-      {isModalOpen && <ApplicationModal onClose={() => setIsModalOpen(false)} />}
+      <ApplicationModal 
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)} 
+        committeeName="Çalıştay"
+        message={settings?.globalApplicationMessage}
+        email={settings?.globalApplicationEmail}
+        url={settings?.globalApplicationUrl}
+        deadline={settings?.applicationDeadline}
+        expiredMessage={settings?.deadlineExpiredMessage}
+      />
     </div>
   );
 }

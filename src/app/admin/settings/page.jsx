@@ -22,6 +22,7 @@ export default function AdminSettings() {
     globalApplicationMessage: '',
     globalApplicationEmail: '',
     globalApplicationUrl: '',
+    highlightsTitle: '',
     highlights: []
   });
   
@@ -36,7 +37,24 @@ export default function AdminSettings() {
       .then(data => {
         if (data) {
           setSettings({
-            ...data,
+            siteName: data.siteName || '',
+            workshopName: data.workshopName || '',
+            shortDescription: data.shortDescription || '',
+            dateAndLocation: data.dateAndLocation || '',
+            instagramUrl: data.instagramUrl || '',
+            vision: data.vision || '',
+            mission: data.mission || '',
+            committeesPageTitle: data.committeesPageTitle || '',
+            committeesPageSubtitle: data.committeesPageSubtitle || '',
+            workshopStartDate: data.workshopStartDate || '',
+            workshopDurationDays: data.workshopDurationDays !== undefined ? data.workshopDurationDays : 3,
+            applicationDeadline: data.applicationDeadline || '',
+            deadlineExpiredMessage: data.deadlineExpiredMessage || '',
+            workshopHappeningMessage: data.workshopHappeningMessage || '',
+            globalApplicationMessage: data.globalApplicationMessage || '',
+            globalApplicationEmail: data.globalApplicationEmail || '',
+            globalApplicationUrl: data.globalApplicationUrl || '',
+            highlightsTitle: data.highlightsTitle || '',
             highlights: data.highlights || []
           });
         }
@@ -276,6 +294,11 @@ export default function AdminSettings() {
               </h2>
               <p style={{ marginBottom: '2rem', opacity: 0.6, fontSize: '0.9rem' }}>Ana sayfadaki sayısal veya sözel vurgu kartlarını buradan yönetin.</p>
               
+              <div className="form-group" style={{ marginBottom: '2rem' }}>
+                <label>Bölüm Başlığı</label>
+                <input className="form-input" value={settings.highlightsTitle || ''} onChange={e => setSettings({...settings, highlightsTitle: e.target.value})} placeholder="Örn: Neden Bizimle Olmalısın?" />
+              </div>
+
               <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
                 {settings.highlights.map((h, index) => (
                   <div key={index} className="glass" style={{ padding: '1.5rem', display: 'flex', gap: '1.5rem', alignItems: 'flex-end', background: 'rgba(255,255,255,0.02)', borderRadius: '12px' }}>

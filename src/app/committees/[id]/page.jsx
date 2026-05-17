@@ -198,9 +198,9 @@ export default function CommitteeDetail({ params }) {
         isOpen={isModalOpen} 
         onClose={() => setIsModalOpen(false)} 
         committeeName={committee.name}
-        message={committee.applicationMessage}
-        email={committee.applicationEmail}
-        url={committee.applicationUrl}
+        message={committee.applicationMessage || settings?.globalApplicationMessage}
+        email={committee.applicationEmail || settings?.globalApplicationEmail}
+        url={committee.applicationUrl || settings?.globalApplicationUrl}
         deadline={settings?.applicationDeadline}
         expiredMessage={settings?.deadlineExpiredMessage}
       />

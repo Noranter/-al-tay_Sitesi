@@ -27,6 +27,7 @@ const SettingsSchema = new mongoose.Schema({
   workshopHappeningMessage: { type: String, default: 'Çalıştay şu anda gerçekleşiyor!' },
   
   // Why Join / Highlights Section
+  highlightsTitle: { type: String, default: 'Neden Bizimle Olmalısın?' },
   highlights: [{
     title: String,
     value: String, // Can be "4", "100+", or empty for text-only
