@@ -124,7 +124,7 @@ export default function RootLayoutContent({ children }) {
             <Link href="/committees" style={{ color: 'white', opacity: 0.6, textDecoration: 'none' }}>Komiteler</Link>
             <Link href="/board" style={{ color: 'white', opacity: 0.6, textDecoration: 'none' }}>Yönetim Kurulu</Link>
           </div>
-          <p style={{ fontSize: '0.8rem', opacity: 0.3 }}>© 2026 Galatasaray Lisesi Çalıştayı. Tüm hakları saklıdır.</p>
+          <p style={{ fontSize: '0.8rem', opacity: 0.3 }}>© 2026 {settings?.workshopName || 'Gölcük Anadolu Lisesi Çalıştayı'}. Tüm hakları saklıdır.</p>
         </div>
       </footer>
 
