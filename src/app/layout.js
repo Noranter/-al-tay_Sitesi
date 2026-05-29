@@ -20,12 +20,18 @@ export async function generateMetadata() {
           { url: iconUrl, rel: 'shortcut icon' },
           { url: iconUrl, rel: 'apple-touch-icon' }
         ],
+      },
+      verification: {
+        google: "o9BUx7Ggn-D81rkb0MeL0W9guC_fhlqYAeMIAipPtL4",
       }
     };
   } catch (error) {
     console.error("Metadata generation error:", error);
     return {
       title: "GalÇal 26 | Lise Çalıştayı",
+      verification: {
+        google: "o9BUx7Ggn-D81rkb0MeL0W9guC_fhlqYAeMIAipPtL4",
+      }
     };
   }
 }
